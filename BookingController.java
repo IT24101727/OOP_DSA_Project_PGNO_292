@@ -17,27 +17,40 @@ public class BookingController {
     private BookingService bookingService;
 
     @GetMapping
+    public ResponseEntity<List<Booking>> getAllBookings() {
+        try {
+            List<Booking> bookings = bookingService.getAllBookings();
+            return ResponseEntity.ok(bookings);
+        } catch (Exception e) {
+            System.err.println("Error fetching all bookings: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @GetMapping(params = "userId")
     public ResponseEntity<List<Booking>> getBookingsByUser(@RequestParam String userId) {
         try {
             List<Booking> bookings = bookingService.getBookingsByUser(userId);
             return ResponseEntity.ok(bookings);
         } catch (Exception e) {
-            System.err.println("Error fetching bookings: " + e.getMessage());
+            System.err.println("Error fetching bookings for user " + userId + ": " + e.getMessage());
             return ResponseEntity.status(500).body(null);
         }
     }
+
     @PostMapping
     public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
         try {
             if (booking.getPackageId() == null || booking.getUserId() == null ||
-                    booking.getTravelDate() == null || booking.getTravelers() <= 0 || booking.getBookingType() == null) {
+                    booking.getTravelDate() == null || booking.getTravelers() <= 0 ||
+                    booking.getBookingType() == null) {
                 return ResponseEntity.badRequest().body("Invalid booking data");
             }
-
             booking.setId(UUID.randomUUID());
             bookingService.saveBooking(booking);
             return ResponseEntity.ok("Booking created successfully");
         } catch (IOException e) {
+            System.err.println("Error creating booking: " + e.getMessage());
             return ResponseEntity.status(500).body("Failed to create booking: " + e.getMessage());
         }
     }
@@ -54,6 +67,7 @@ public class BookingController {
             bookingService.updateBooking(booking);
             return ResponseEntity.ok("Booking updated successfully");
         } catch (IOException e) {
+            System.err.println("Error updating booking: " + e.getMessage());
             return ResponseEntity.status(500).body("Failed to update booking: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Invalid booking ID format");
@@ -66,13 +80,10 @@ public class BookingController {
             bookingService.deleteBooking(UUID.fromString(id));
             return ResponseEntity.ok("Booking deleted successfully");
         } catch (IOException e) {
+            System.err.println("Error deleting booking: " + e.getMessage());
             return ResponseEntity.status(500).body("Failed to delete booking: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Invalid booking ID format");
         }
     }
 }
-
-
-
-
