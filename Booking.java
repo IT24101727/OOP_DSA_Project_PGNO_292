@@ -8,7 +8,7 @@ public class Booking {
     private UUID packageId;
     private String travelDate;
     private int travelers;
-    private String bookingType; // GROUP or INDIVIDUAL
+    private String bookingType;
 
     public Booking(UUID id, UUID userId, UUID packageId, String travelDate, int travelers, String bookingType) {
         this.id = id;
@@ -19,9 +19,7 @@ public class Booking {
         this.bookingType = bookingType;
     }
 
-    public Booking() {
-
-    }
+    public Booking() {}
 
     // Getters and Setters
     public UUID getId() { return id; }
@@ -37,7 +35,6 @@ public class Booking {
     public String getBookingType() { return bookingType; }
     public void setBookingType(String bookingType) { this.bookingType = bookingType; }
 
-    // Polymorphic cancellation
     public String cancel() {
         return "GROUP".equals(bookingType)
                 ? "Group booking cancelled with 50% refund"
@@ -45,6 +42,8 @@ public class Booking {
     }
 
     public String toFileFormat() {
-        return String.join(",", id.toString(), userId.toString(), packageId.toString(), travelDate, String.valueOf(travelers), bookingType);
+        String escapedTravelDate = travelDate.replace(",", "\\,");
+        return String.join(",", id.toString(), userId.toString(), packageId.toString(),
+                escapedTravelDate, String.valueOf(travelers), bookingType);
     }
 }
