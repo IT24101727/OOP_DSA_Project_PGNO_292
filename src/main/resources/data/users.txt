@@ -1,0 +1,2 @@
+4548dc75-4180-45bd-ac29-b6e280700a5f,admin,admin123,sa@gmail.com,0771234567,TOURIST
+550e8400-e29b-41d4-a716-446655440003,adminuser,adminpass,admin@example.com,+9876543210,ADMIN
